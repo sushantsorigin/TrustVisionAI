@@ -1,307 +1,160 @@
-<<<<<<< HEAD
-```markdown
-# 🛡️ TrustVision AI
-### AI-Powered Deepfake Detection & Digital Media Verification
-
-![Python](https://img.shields.io/badge/Python-3.10+-blue?style=for-the-badge&logo=python)
-![FastAPI](https://img.shields.io/badge/FastAPI-Backend-009688?style=for-the-badge&logo=fastapi)
-![React](https://img.shields.io/badge/React-Frontend-61DAFB?style=for-the-badge&logo=react)
-![Vite](https://img.shields.io/badge/Vite-Build-646CFF?style=for-the-badge&logo=vite)
-![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
-
-TrustVision AI is an AI-powered web application that detects manipulated or AI-generated facial images using modern deep learning techniques. The platform provides a simple and intuitive interface where users can upload or capture an image, receive an authenticity analysis, and generate a detailed report with confidence scores.
-
+🛡️ TrustVision AI
+AI-powered deepfake detection for face images
+Upload a photo or capture one from your webcam, get an authenticity verdict with a confidence score, and download a PDF report.
 ---
-
-## 📖 Overview
-
-With the rapid growth of generative AI, distinguishing authentic images from manipulated content has become increasingly difficult. TrustVision AI addresses this challenge by combining computer vision, deep learning, and modern web technologies into a scalable detection platform.
-
-The application consists of a React frontend, a FastAPI backend, and an AI inference engine built using PyTorch and Hugging Face models.
-
----
-
-## ✨ Features
-
-- 🔍 AI-powered deepfake detection
-- 📷 Webcam image capture
-- 🖼️ Image upload support
-- 📊 Confidence score visualization
-- 📄 PDF report generation
-- 💾 Scan history storage
-- ⚡ Fast REST API using FastAPI
-- 🎨 Responsive React UI
-- 🤖 Optional Gemini Vision verification
-- 🛡️ Risk assessment for uploaded images
-
----
-
-## 🏗️ Project Architecture
-
+Overview
+Generative AI makes it easy to fabricate realistic faces. TrustVision AI is a full-stack web app that screens a face image with a pretrained deep-learning classifier, combines that score with lightweight metadata and image-forensics signals, and presents the result in a clean interface.
+It was built as a student project to show how a modern ML model can be served through a REST API and a React front end. It is a screening aid, not proof: see Limitations.
+Features
+🖼️ Image upload with drag-and-drop
+📷 Webcam capture, with live frame sampling from the browser
+📊 Authenticity score, prediction (REAL / FAKE), confidence and risk level (LOW / MEDIUM / HIGH)
+🔬 Forensic signals: EXIF / AI-generation metadata checks, plus texture, edge, DCT and ELA analysis when running locally
+📄 PDF report for every scan
+💾 Scan history stored in SQLite
+🤖 Optional Gemini Vision second opinion (off unless an API key is set)
+🔌 Two inference modes: local PyTorch, or remote Hugging Face Inference API
+How it works
+```text
+User
+ │
+ ▼
+React + Vite frontend
+ │  POST /scan (multipart file)
+ ▼
+FastAPI backend ──────────────► SQLite (scan history)
+ │            └───────────────► PDF report (/reports/{id})
+ ├── local mode ──► PyTorch + SigLIP + OpenCV forensics
+ ├── remote mode ─► Hugging Face Inference API
+ └── optional ────► Gemini Vision second opinion
 ```
-
-```
-            User
-             │
-             ▼
-    React + Vite Frontend
-             │
-      REST API Requests
-             │
-             ▼
-      FastAPI Backend
-             │
-  ┌──────────┴──────────┐
-  │                     │
-  ▼                     ▼
-```
-
-AI Inference Engine     SQLite Database
-(PyTorch + SigLip)      Scan History
-│
-▼
-Prediction + Confidence
-│
-▼
-PDF Report Generation
-
-```
-
----
-
-## 🛠️ Tech Stack
-
-### Frontend
-
-- React.js
-- Vite
-- CSS
-- JavaScript
-
-### Backend
-
-- FastAPI
-- Python
-- SQLAlchemy
-- SQLite
-
-### Artificial Intelligence
-
-- PyTorch
-- Hugging Face Transformers
-- SigLip Deepfake Detection
-- Google Gemini Vision (Optional)
-
-### Other Libraries
-
-- ReportLab
-- Pillow
-- OpenCV
-- NumPy
-
----
-
-## 📂 Project Structure
-
-```
-
+The frontend sends the image to `POST /scan`.
+The backend runs the detector (local or remote) and reads image metadata.
+Neural scores are fused with metadata and forensic signals into a final prediction.
+The scan is saved to SQLite and the JSON result is returned. A PDF is available at `/reports/{id}`.
+If inference fails, the API returns an error. It does not return a made-up prediction.
+Tech stack
+Layer	Technology
+Frontend	React 19, Vite, Tailwind CSS 4, React Router, Framer Motion
+Backend	FastAPI, SQLAlchemy, SQLite, ReportLab, Pillow
+ML	PyTorch, Hugging Face Transformers, OpenCV, SciPy
+Model	`prithivMLmods/deepfake-detector-model-v1` (SigLIP, Apache-2.0)
+Optional	Google Gemini Vision
+Deployment	Vercel (frontend), Render (backend)
+Project structure
+```text
 TrustVision-AI/
-│
-├── Frontend/
-│   ├── src/
-│   ├── public/
-│   └── package.json
-│
+├── Frontend/            React app (pages/Home, pages/Analyze)
 ├── Backend/
-│   ├── main.py
-│   ├── reporting.py
-│   └── requirements.txt
-│
-├── database/
-│
+│   ├── main.py          FastAPI routes
+│   └── reporting.py     PDF report generation
+├── database/            SQLAlchemy engine and models
 ├── ml/
-│   ├── inference.py
-│   ├── model.py
-│   ├── train.py
-│   └── dataset.py
-│
-├── test_images/
-│
-├── app.py
-├── start_app.py
-└── README.md
-
-````
-
----
-
-## 🚀 Installation
-
-### 1. Clone the repository
-
+│   ├── inference.py     Detector (local + remote) and score fusion
+│   ├── gemini_verifier.py
+│   └── runtime_config.py
+├── test_images/         Sample images
+├── app.py               Deployment entrypoint
+├── start_app.py         Starts backend and frontend together
+├── requirements.txt     Lightweight API dependencies (remote inference)
+└── requirements-ml.txt  Full local ML dependencies
+```
+Getting started
+Prerequisites
+Python 3.10+
+Node.js 18+ and npm
+1. Clone
 ```bash
-git clone https://github.com/your-username/TrustVision-AI.git
-cd TrustVision-AI
-````
-
----
-
-### 2. Install Backend Dependencies
-
+git clone https://github.com/sushantsorigin/TrustVisionAI.git
+cd TrustVisionAI
+```
+2. Install backend dependencies
+Pick one:
 ```bash
+# Local inference (downloads the model on first run; needs several GB of RAM/disk)
+pip install -r requirements-ml.txt
+
+# Remote inference only (lightweight, needs a Hugging Face token)
 pip install -r requirements.txt
 ```
-
-or
-
-```bash
-pip install -r Backend/requirements.txt
-```
-
----
-
-### 3. Install Frontend Dependencies
-
+3. Install frontend dependencies
 ```bash
 cd Frontend
 npm install
+cd ..
 ```
-
----
-
-### 4. Run the Backend
-
+4. Run
 ```bash
-python app.py
+python start_app.py
 ```
-
-or
-
+Frontend: http://localhost:5173
+Backend: http://localhost:8000
+API docs: http://localhost:8000/docs
+Or run them separately:
 ```bash
-uvicorn Backend.main:app --reload
+python -m uvicorn Backend.main:app --reload    # backend
+cd Frontend && npm run dev                      # frontend
 ```
-
----
-
-### 5. Run the Frontend
-
+The Vite dev server proxies `/scan` and `/reports` to the backend.
+Configuration
+Set these as environment variables (a `Backend/.env` file is loaded automatically and is git-ignored). Never commit keys.
+Variable	Purpose	Default
+`TRUSTVISION_INFERENCE_BACKEND`	`local`, `remote` or `auto`	`auto`
+`HF_TOKEN`	Hugging Face token for remote inference	none
+`HF_INFERENCE_URL`	Override the remote inference endpoint	HF router URL for the model
+`HF_INFERENCE_TIMEOUT`	Remote request timeout in seconds	`45`
+`GEMINI_API_KEY` / `GEMINI_API_KEYS`	Enable optional Gemini verification (comma-separated list for rotation)	none
+`GEMINI_MODEL`	Gemini model name	`gemini-2.0-flash` (see note below)
+`CORS_ALLOW_ORIGINS`	Comma-separated allowed origins	`*`
+`VITE_API_BASE_URL`	Frontend: backend URL when deployed separately	empty (same origin)
+> **Note:** Google has been retiring older Gemini models. If Gemini verification fails, set `GEMINI_MODEL` to a currently available model.
+API
+Method	Endpoint	Description
+`GET`	`/`	Welcome message
+`GET`	`/health`	Service and model status
+`GET`	`/model-info`	Model metadata
+`POST`	`/scan`	Analyze an image (multipart form, field name `file`)
+`GET`	`/reports/{id}`	Download the PDF report for a scan
+Example:
 ```bash
-cd Frontend
-npm run dev
+curl -X POST http://localhost:8000/scan -F "file=@test_images/sample.jpg"
 ```
-
----
-
-## 💻 Usage
-
-1. Open the application.
-2. Upload an image or capture one using the webcam.
-3. Wait for the AI model to process the image.
-4. View:
-
-   * Prediction
-   * Confidence Score
-   * Authenticity Score
-   * Risk Level
-5. Download the generated PDF report.
-
----
-
-## 📊 Workflow
-
+Response (abridged):
+```json
+{
+  "id": 1,
+  "prediction": "REAL",
+  "authenticity_score": 87.4,
+  "confidence": 87.4,
+  "risk_level": "LOW",
+  "real_probability": 87.4,
+  "fake_probability": 12.6,
+  "report_url": "/reports/1"
+}
 ```
-Upload Image
-      │
-      ▼
-Image Validation
-      │
-      ▼
-AI Model Inference
-      │
-      ▼
-Deepfake Prediction
-      │
-      ▼
-Confidence Analysis
-      │
-      ▼
-Risk Assessment
-      │
-      ▼
-Generate PDF Report
-```
-
----
-
-## 🎯 Applications
-
-* Digital Media Verification
-* Social Media Content Analysis
-* Journalism & Fact Checking
-* Cybersecurity
-* Identity Verification
-* Digital Forensics
-* Educational Research
-
----
-
-## 🔮 Future Improvements
-
-* Video Deepfake Detection
-* Real-time Camera Analysis
-* Mobile Application
-* Cloud Deployment
-* Multi-language Support
-* Explainable AI (XAI)
-* Face Manipulation Localization
-* User Authentication Dashboard
-
----
-
-## 📸 Screenshots
-
-> Add screenshots of:
->
-> * Home Page
-> * Upload Page
-> * Detection Result
-> * PDF Report
-> * Dashboard
-
----
-
-## 🤝 Contributing
-
-Contributions are welcome!
-
-1. Fork the repository.
-2. Create a new feature branch.
-3. Commit your changes.
-4. Push to your branch.
-5. Open a Pull Request.
-
----
-
-## 📄 License
-
-This project is licensed under the MIT License.
-
----
-
-## 👨‍💻 Author
-
-**B SUSHANT**
-
-Information Science Engineering Student
-
-AI • Machine Learning • Full Stack Development • Computer Vision
-
----
-
-### ⭐ If you found this project useful, please consider giving it a Star!
-
-```
-```
-=======
-# TrustVisionAI
->>>>>>> 7fe03627349578ddaeb1282de79e74f83d96bcff
+Deployment
+Frontend (Vercel): set the project root to `Frontend`, and set `VITE_API_BASE_URL` to your backend URL.
+Backend (Render): deploy the repo as a Python web service and run `uvicorn Backend.main:app --host 0.0.0.0 --port $PORT`. Set `CORS_ALLOW_ORIGINS` to your frontend URL.
+> The free Render tier has 512 MB RAM, which is too small to run the PyTorch model locally. That is why the backend defaults to remote inference there.
+Limitations
+Not forensic proof. The model reports probabilities. It can be wrong in both directions and should not be used as the sole basis for any serious decision.
+Accuracy figures are the model author's. The model card reports about 94% accuracy on its own test split and labels the model experimental. Performance on other image types, such as new generators or heavily compressed photos, may be lower.
+Remote inference depends on Hugging Face quotas. Free accounts get a small monthly credit allowance, so heavy use can return `402` errors.
+Faces only. The model is designed for face imagery.
+Heatmaps are not supported for the SigLIP model.
+Scan history is not durable on free hosting, where SQLite storage is ephemeral.
+Images are sent to third parties when remote inference or Gemini verification is enabled.
+There is no user authentication yet, and video upload is not part of the UI.
+Roadmap
+[ ] Self-hosted or in-browser inference to remove the third-party quota dependency
+[ ] Server-side upload size and type validation with structured error responses
+[ ] Health check that confirms the model is actually ready
+[ ] Evaluation script with precision, recall and F1 on a labeled test set
+[ ] User accounts and persistent scan history
+Contributing
+Issues and pull requests are welcome. For larger changes, open an issue first to discuss what you would like to change.
+License
+Released under the MIT License.
+Acknowledgements
+prithivMLmods/deepfake-detector-model-v1 for the pretrained detector
+Hugging Face Transformers, FastAPI and React
