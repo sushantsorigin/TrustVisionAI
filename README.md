@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ```markdown
 # 🛡️ TrustVision AI
 ### AI-Powered Deepfake Detection & Digital Media Verification
@@ -301,3 +302,6 @@ AI • Machine Learning • Full Stack Development • Computer Vision
 
 ```
 ```
+=======
+# TrustVisionAI
+>>>>>>> 7fe03627349578ddaeb1282de79e74f83d96bcff
