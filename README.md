@@ -18,7 +18,7 @@ Generative AI has made it increasingly difficult to tell authentic photos from s
 
 The application consists of a React frontend, a FastAPI backend, and an inference engine built on PyTorch and Hugging Face Transformers. Neural predictions are combined with image-metadata and forensic signals to produce the final result.
 
-> **Note:** results are probabilistic. TrustVision AI is a screening aid, not forensic proof. See [Limitations](#-limitations).
+> **Note:** results are probabilistic. TrustVision AI is a screening aid, not forensic proof.
 
 ---
 
@@ -284,7 +284,7 @@ Save Scan + Generate PDF Report
 ## 📸 Screenshots
 
 > Add screenshots of:
->
+> 
 > - Home Page
 > - Upload Page
 > - Detection Result
