@@ -1,0 +1,9 @@
+/Backend/.env
+
+.venv/
+__pycache__/
+*.py[cod]
+/trustvision.db
+/reports/
+/Frontend/node_modules/
+/Frontend/dist/

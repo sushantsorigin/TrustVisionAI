@@ -1,0 +1,12 @@
+# Standalone Gradio demo dependencies.
+#
+# Use this in a separate virtual environment from the production API if you
+# also need google-genai. gradio==4.44.1 and google-genai==1.12.1 require
+# incompatible websockets ranges.
+
+gradio==4.44.1
+pillow==10.4.0
+torch==2.4.1
+transformers==4.46.3
+safetensors==0.4.5
+hf_xet==1.1.0

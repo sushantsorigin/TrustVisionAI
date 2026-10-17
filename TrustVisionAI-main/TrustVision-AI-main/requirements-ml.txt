@@ -1,0 +1,15 @@
+# Full local ML dependencies for TrustVision AI.
+#
+# Install this file for local torch/transformers/OpenCV inference:
+#   pip install -r requirements-ml.txt
+
+-r requirements.txt
+
+numpy==1.26.4
+opencv-python-headless==4.10.0.84
+scipy==1.13.1
+torch==2.4.1
+transformers==4.46.3
+safetensors==0.4.5
+hf_xet==1.1.0
+mediapipe==0.10.18

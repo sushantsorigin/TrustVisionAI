@@ -1,0 +1,24 @@
+# TrustVision AI production dependencies.
+#
+# This file is intentionally Vercel-safe: it excludes the local PyTorch,
+# Transformers, OpenCV, MediaPipe, and Gradio stacks. Vercel uses the
+# Hugging Face Inference API backend by default (requires HF_TOKEN). For full local ML inference,
+# install requirements-ml.txt instead.
+
+# --- Web framework ---
+fastapi==0.115.5
+uvicorn==0.32.1
+python-multipart==0.0.12
+python-dotenv==1.0.1
+
+# --- Database ---
+sqlalchemy==2.0.36
+
+# --- PDF reports ---
+reportlab==4.2.5
+
+# --- Lightweight image metadata handling ---
+pillow==10.4.0
+
+# --- Optional: Gemini Vision secondary verifier ---
+google-genai==1.12.1
